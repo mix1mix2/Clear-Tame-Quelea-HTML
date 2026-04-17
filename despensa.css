@@ -1,0 +1,52 @@
+.navigation-wrapper {
+  display: contents;
+}
+ 
+.navigation-container1 {
+  display: contents;
+}
+ 
+.navigation-container2 {
+  display: none;
+}
+ 
+.navigation-container3 {
+  display: contents;
+}
+
+.footer-wrapper {
+  display: contents;
+}
+ 
+.footer-container1 {
+  display: contents;
+}
+ 
+.footer-container2 {
+  display: none;
+}
+ 
+.footer-container3 {
+  display: contents;
+}
+
+.despensa-container1 {
+  width: 100%;
+  min-height: 100vh;
+}
+ 
+.despensa-container2 {
+  display: none;
+}
+ 
+.despensa-container3 {
+  display: contents;
+}
+ 
+.despensa-container4 {
+  display: none;
+}
+ 
+.despensa-container5 {
+  display: contents;
+}

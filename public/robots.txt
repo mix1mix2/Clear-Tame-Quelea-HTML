@@ -1,0 +1,7 @@
+User-agent: Googlebot
+Disallow: /nogooglebot/
+
+User-agent: *
+Allow: /
+
+Sitemap: https://clear-tame-quelea-5t9xh6.teleporthq.site/sitemap.xml

@@ -1,0 +1,53 @@
+.navigation-wrapper {
+  display: contents;
+}
+ 
+.navigation-container1 {
+  display: contents;
+}
+ 
+.navigation-container2 {
+  display: none;
+}
+ 
+.navigation-container3 {
+  display: contents;
+}
+
+.footer-wrapper {
+  display: contents;
+}
+ 
+.footer-container1 {
+  display: contents;
+}
+ 
+.footer-container2 {
+  display: none;
+}
+ 
+.footer-container3 {
+  display: contents;
+}
+
+.recetas-normalizadas-container1 {
+  width: 100%;
+  min-height: 100vh;
+}
+ 
+.recetas-normalizadas-text48 {
+  font-weight: 700;
+}
+ 
+.recetas-normalizadas-thq-ring-fill-elm {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 22;
+}
+ 
+.recetas-normalizadas-container2 {
+  display: none;
+}
+ 
+.recetas-normalizadas-container3 {
+  display: contents;
+}
