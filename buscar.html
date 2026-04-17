@@ -823,10 +823,10 @@ document.addEventListener('DOMContentLoaded', function() {
                   }
 
                   const baseRecipes = [
-                    { id:"base-1", title:"Crema de calabaza asada", source:"Monsieur Cuisine", type:"exacta", emoji:"🥣", difficulty:"Fácil", time:30, ingredients:["calabaza","cebolla","ajo","aceite oliva","sal"], summary:"Receta directa para MC Smart con sofrito suave y triturado final." },
-                    { id:"base-2", title:"Lentejas con chorizo", source:"Monsieur Cuisine", type:"exacta", emoji:"🍲", difficulty:"Media", time:45, ingredients:["lentejas","cebolla","ajo","chorizo","pimentón"], summary:"Plato de cuchara tradicional con tiempos ajustados para MC Smart." },
-                    { id:"base-3", title:"Espaguetis Carbonara Real", source:"Cookidoo", type:"similar", emoji:"🍝", difficulty:"Media", time:28, ingredients:["espaguetis","huevo","queso","panceta","pimienta"], summary:"Versión adaptable, requiere ajuste de giro inverso y temperatura." },
-                    { id:"base-4", title:"Pollo al curry suave", source:"Blog", type:"similar", emoji:"🍛", difficulty:"Fácil", time:35, ingredients:["pollo","cebolla","curry","leche de coco","sal"], summary:"Curry diario para adaptar a velocidad cuchara y temperatura controlada." }
+                    { id:"base-1", title:"Crema de calabaza asada", source:"Monsieur Cuisine", type:"exacta", emoji:"🥣", difficulty:"Fácil", time:30, dayMoment:"Cena", ingredients:["calabaza","cebolla","ajo","aceite oliva","sal"], summary:"Receta directa para MC Smart con sofrito suave y triturado final.", instructions:["Sofríe cebolla y ajo 5 min.","Añade calabaza y cocina 20 min a 120ºC.","Tritura y ajusta sal."], mediaType:"image", mediaUrl:"https://images.pexels.com/photos/539451/pexels-photo-539451.jpeg?auto=compress&cs=tinysrgb&w=1200", url:"https://www.lidl.es/es/monsieur-cuisine/s10068307" },
+                    { id:"base-2", title:"Lentejas con chorizo", source:"Monsieur Cuisine", type:"exacta", emoji:"🍲", difficulty:"Media", time:45, dayMoment:"Comida", ingredients:["lentejas","cebolla","ajo","chorizo","pimentón"], summary:"Plato de cuchara tradicional con tiempos ajustados para MC Smart.", instructions:["Sofríe verdura base 6 min.","Añade lentejas y chorizo con agua.","Cocina 35 min y deja reposar."], mediaType:"image", mediaUrl:"https://images.pexels.com/photos/921376/pexels-photo-921376.jpeg?auto=compress&cs=tinysrgb&w=1200", url:"https://www.lidl.es/es/monsieur-cuisine/s10068307" },
+                    { id:"base-3", title:"Espaguetis Carbonara Real", source:"Cookidoo", type:"similar", emoji:"🍝", difficulty:"Media", time:28, dayMoment:"Comida", ingredients:["espaguetis","huevo","queso","panceta","pimienta"], summary:"Versión adaptable, requiere ajuste de giro inverso y temperatura.", instructions:["Cuece pasta y reserva.","Prepara la salsa fuera del calor.","Integra en giro inverso."], mediaType:"video", mediaUrl:"https://www.youtube.com/watch?v=3AAdKl1UYZs", url:"https://cookidoo.es" },
+                    { id:"base-4", title:"Pollo al curry suave", source:"Blog", type:"similar", emoji:"🍛", difficulty:"Fácil", time:35, dayMoment:"Cena", ingredients:["pollo","cebolla","curry","leche de coco","sal"], summary:"Curry diario para adaptar a velocidad cuchara y temperatura controlada.", instructions:["Pocha cebolla y curry.","Añade pollo y cocina 8 min.","Incorpora coco y cocina 15 min."], mediaType:"image", mediaUrl:"https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=1200", url:"https://www.directoalpaladar.com" }
                   ]
 
                   const $ = (s) => document.querySelector(s)
@@ -841,15 +841,39 @@ document.addEventListener('DOMContentLoaded', function() {
                   const manualBtn = $("#manual-save-btn")
                   const manualUrlInput = document.querySelector('.recipe-input')
                   const analyzeBtn = document.querySelector('.input-row .btn.btn-secondary')
+                  const sourceChecks = [...document.querySelectorAll('.filter-checkboxes input[type=\"checkbox\"]')]
+                  const dayMomentSelect = document.querySelector('.filter-select')
+                  const difficultyPills = [...document.querySelectorAll('.filter-pills .pill')]
+                  const filterApplyBtn = document.querySelector('.filter-footer .btn.btn-primary')
+                  const filterResetBtn = document.querySelector('.filter-footer .btn.btn-link')
 
                   const normalize = (v) => (v || "").toLowerCase().trim()
+                  const normalizeRecipe = (recipe) => ({
+                    ...recipe,
+                    difficulty: recipe.difficulty || 'Media',
+                    dayMoment: recipe.dayMoment || 'Cualquier momento',
+                    instructions: Array.isArray(recipe.instructions) ? recipe.instructions : [],
+                    ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+                    mediaType: recipe.mediaType || '',
+                    mediaUrl: recipe.mediaUrl || '',
+                    url: recipe.url || '',
+                  })
                   const getSet = (k) => new Set(JSON.parse(localStorage.getItem(k) || '[]').map(normalize).filter(Boolean))
-                  const getUserRecipes = () => JSON.parse(localStorage.getItem(STORAGE.recipesUser) || '[]')
-                  const getSaved = () => JSON.parse(localStorage.getItem(STORAGE.saved) || '[]')
+                  const getUserRecipes = () => JSON.parse(localStorage.getItem(STORAGE.recipesUser) || '[]').map(normalizeRecipe)
+                  const getSaved = () => JSON.parse(localStorage.getItem(STORAGE.saved) || '[]').map(normalizeRecipe)
+                  const getAllRecipes = () => {
+                    const all = [...baseRecipes, ...getUserRecipes(), ...getSaved()].map(normalizeRecipe)
+                    const seen = new Map()
+                    all.forEach((recipe) => {
+                      const key = `${normalize(recipe.title)}::${normalize(recipe.source)}`
+                      if (!seen.has(key)) seen.set(key, recipe)
+                    })
+                    return [...seen.values()]
+                  }
 
                   const keywordScore = (query, recipe) => {
                     if (!query) return 1
-                    const haystack = `${recipe.title} ${recipe.summary} ${(recipe.ingredients || []).join(' ')}`.toLowerCase()
+                    const haystack = `${recipe.title} ${recipe.summary} ${(recipe.ingredients || []).join(' ')} ${(recipe.instructions || []).join(' ')} ${recipe.source}`.toLowerCase()
                     const terms = query.toLowerCase().split(/[\s,]+/).filter(Boolean)
                     if (!terms.length) return 1
                     const hits = terms.filter((term) => haystack.includes(term)).length
@@ -878,8 +902,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                       const cards = recipes.slice(0, 4).map((r) => {
                         const typeLabel = r.type === 'exacta' ? 'Exacta MC Smart' : 'Similar / Adaptable'
+                        const mediaBlock = r.mediaUrl ? (r.mediaType === 'video'
+                          ? `<a class="results-card-media-link" href="${r.mediaUrl}" target="_blank" rel="noopener noreferrer">▶ Ver vídeo</a>`
+                          : `<img class="results-card-media" src="${r.mediaUrl}" alt="${r.title}" loading="lazy" />`) : ''
                         return `
                           <article class="results-card" data-id="${r.id}">
+                            ${mediaBlock}
                             <div class="results-card-content">
                               <div class="results-card-meta">
                                 <span class="results-card-tag">${typeLabel}</span>
@@ -887,6 +915,7 @@ document.addEventListener('DOMContentLoaded', function() {
                               </div>
                               <h4 class="results-card-title">${r.title}</h4>
                               <p class="section-content">${r.summary}</p>
+                              <p class="section-content"><strong>Ingredientes:</strong> ${(r.ingredients || []).slice(0, 5).join(' · ') || 'No disponibles'}</p>
                             </div>
                             <div class="results-card-actions">
                               <button class="btn btn-sm btn-outline" data-action="open">Abrir</button>
@@ -916,7 +945,10 @@ document.addEventListener('DOMContentLoaded', function() {
                   const renderSaved = () => {
                     const items = getSaved()
                     savedCount.textContent = items.length
-                    if (!items.length) return
+                    if (!items.length) {
+                      savedRail.innerHTML = '<article class="saved-card status-pending"><div class="saved-card-body"><h4 class="saved-card-title">Aún no tienes recetas guardadas</h4><p class="section-content">Guarda resultados para reutilizarlos y adaptarlos.</p></div></article>'
+                      return
+                    }
                     savedRail.innerHTML = items.slice(-8).reverse().map((s) => `
                       <article class="saved-card status-usable">
                         <div class="saved-card-badge"><span>Guardada</span></div>
@@ -931,30 +963,50 @@ document.addEventListener('DOMContentLoaded', function() {
                     `).join('')
                   }
 
-                  const runSearch = () => {
+                  const runSearch = (scroll = false) => {
                     const query = normalize(searchInput.value)
                     const have = getSet(STORAGE.have)
                     const avoid = getSet(STORAGE.avoid)
-                    const allRecipes = [...baseRecipes, ...getUserRecipes()]
+                    const allRecipes = getAllRecipes()
+                    const selectedDifficulty = difficultyPills.find((pill) => pill.classList.contains('active'))?.textContent?.trim()
+                    const selectedMoment = dayMomentSelect?.value?.trim()
+                    const enabledSources = sourceChecks.filter((check) => check.checked).map((check) => normalize(check.parentElement?.textContent))
 
                     let filtered = allRecipes
                       .map((r) => ({ ...r, qScore: keywordScore(query, r), pScore: pantryScore(r, have, avoid) }))
                       .filter((r) => r.qScore > 0 || !query)
 
+                    if (selectedDifficulty) {
+                      filtered = filtered.filter((r) => normalize(r.difficulty) === normalize(selectedDifficulty))
+                    }
+                    if (selectedMoment && selectedMoment !== 'Cualquier momento') {
+                      filtered = filtered.filter((r) => normalize(r.dayMoment) === normalize(selectedMoment))
+                    }
+                    if (enabledSources.length) {
+                      filtered = filtered.filter((recipe) => {
+                        const source = normalize(recipe.source)
+                        return enabledSources.some((selected) => {
+                          if (selected.includes('oficial')) return source.includes('monsieur') || source.includes('lidl')
+                          if (selected.includes('cookidoo')) return source.includes('cookidoo')
+                          if (selected.includes('youtube')) return source.includes('youtube') || (recipe.mediaUrl || '').includes('youtu')
+                          return source.includes(selected)
+                        })
+                      })
+                    }
                     if (pantryToggle?.checked) filtered = filtered.filter((r) => r.pScore >= 0.35)
 
                     filtered.sort((a, b) => (b.qScore + b.pScore) - (a.qScore + a.pScore))
-                    renderResults(filtered.length ? filtered : allRecipes)
+                    renderResults(filtered)
 
                     const avg = filtered.length ? Math.round(filtered.reduce((acc, r) => acc + r.pScore, 0) / filtered.length * 100) : 0
                     pantryMatch.textContent = `${avg}%`
-                    document.getElementById("results-container").scrollIntoView({ behavior: "smooth" })
+                    if (scroll) document.getElementById("results-container").scrollIntoView({ behavior: "smooth" })
                   }
 
                   const saveRecipe = (recipe) => {
                     const saved = getSaved()
                     if (saved.some((s) => s.id === recipe.id)) return
-                    saved.push({ id: recipe.id, title: recipe.title, source: recipe.source })
+                    saved.push(normalizeRecipe(recipe))
                     localStorage.setItem(STORAGE.saved, JSON.stringify(saved))
                     renderSaved()
                   }
@@ -979,6 +1031,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     if (recipeNode) {
+                      const imageData = Array.isArray(recipeNode.image) ? recipeNode.image[0] : recipeNode.image
+                      const imageUrl = typeof imageData === 'string' ? imageData : imageData?.url
+                      const videoData = recipeNode.video
+                      const videoUrl = typeof videoData === 'string' ? videoData : (videoData?.contentUrl || videoData?.embedUrl || '')
+                      const steps = Array.isArray(recipeNode.recipeInstructions)
+                        ? recipeNode.recipeInstructions.map((step) => typeof step === 'string' ? step : (step?.text || step?.name || '')).filter(Boolean)
+                        : []
                       return {
                         id: `url-${Date.now()}`,
                         title: recipeNode.name || 'Receta importada',
@@ -987,8 +1046,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         emoji: '🔎',
                         difficulty: 'Media',
                         time: 35,
+                        dayMoment: 'Cualquier momento',
                         summary: recipeNode.description || 'Receta importada desde recurso externo.',
                         ingredients: (recipeNode.recipeIngredient || []).map((i) => normalize(i).split(',')[0]).filter(Boolean).slice(0, 12),
+                        instructions: steps,
+                        mediaType: videoUrl ? 'video' : (imageUrl ? 'image' : ''),
+                        mediaUrl: videoUrl || imageUrl || '',
+                        url,
                       }
                     }
 
@@ -1002,8 +1066,13 @@ document.addEventListener('DOMContentLoaded', function() {
                       emoji: '🔎',
                       difficulty: 'Media',
                       time: 35,
+                      dayMoment: 'Cualquier momento',
                       summary: 'Importada con extracción heurística. Revisa ingredientes y pasos.',
                       ingredients: ing.map((v) => normalize(v)),
+                      instructions: [],
+                      mediaType: '',
+                      mediaUrl: '',
+                      url,
                     }
                   }
 
@@ -1014,27 +1083,44 @@ document.addEventListener('DOMContentLoaded', function() {
                     saveRecipe(recipe)
                   }
 
-                  searchTrigger.addEventListener("click", runSearch)
-                  searchInput.addEventListener("keypress", (e) => e.key === "Enter" && runSearch())
+                  searchTrigger.addEventListener("click", () => runSearch(true))
+                  searchInput.addEventListener("keypress", (e) => e.key === "Enter" && runSearch(true))
                   pantryToggle?.addEventListener("change", runSearch)
+                  filterApplyBtn?.addEventListener('click', () => runSearch(true))
+                  filterResetBtn?.addEventListener('click', () => {
+                    sourceChecks.forEach((check, idx) => { check.checked = idx < 2 })
+                    if (dayMomentSelect) dayMomentSelect.value = 'Cualquier momento'
+                    difficultyPills.forEach((pill, idx) => pill.classList.toggle('active', idx === 0))
+                    if (pantryToggle) pantryToggle.checked = false
+                    runSearch()
+                  })
+                  difficultyPills.forEach((pill) => {
+                    pill.addEventListener('click', () => {
+                      difficultyPills.forEach((p) => p.classList.remove('active'))
+                      pill.classList.add('active')
+                      runSearch()
+                    })
+                  })
+                  sourceChecks.forEach((check) => check.addEventListener('change', runSearch))
+                  dayMomentSelect?.addEventListener('change', runSearch)
                   document.querySelectorAll(".search-hero-chip").forEach((chip) => chip.addEventListener("click", () => {
                     searchInput.value = chip.textContent.trim()
-                    runSearch()
+                    runSearch(true)
                   }))
 
                   resultsGrid.addEventListener('click', (e) => {
                     const card = e.target.closest('.results-card')
                     if (!card) return
                     const recipeId = card.getAttribute('data-id')
-                    const recipe = [...baseRecipes, ...getUserRecipes()].find((r) => r.id === recipeId)
+                    const recipe = getAllRecipes().find((r) => r.id === recipeId)
                     if (!recipe) return
 
                     const action = e.target.getAttribute('data-action')
                     if (action === 'save') saveRecipe(recipe)
                     if (action === 'adapt') window.location.href = `adaptar.html?recipe=${encodeURIComponent(recipe.id)}`
                     if (action === 'open') {
-                      searchInput.value = recipe.title
-                      runSearch()
+                      if (recipe.url) window.open(recipe.url, '_blank', 'noopener,noreferrer')
+                      else alert('Este recurso no tiene URL de origen. Usa “Ficha” para completarlo.')
                     }
                   })
 
@@ -1047,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       const recipe = await tryExtractRecipe(url)
                       saveImportedRecipe(recipe)
                       searchInput.value = recipe.title
-                      runSearch()
+                      runSearch(true)
                       alert(`Receta importada: ${recipe.title}`)
                     } catch (err) {
                       alert('No se pudo extraer automáticamente. Copia título, ingredientes y pasos de forma manual.')
