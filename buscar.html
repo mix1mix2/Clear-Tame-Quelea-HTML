@@ -95,7 +95,7 @@
                   <a href="buscar.html">
                     <div class="navigation-link"><span>Buscar</span></div>
                   </a>
-                  <a href="Recetas">
+                  <a href="recetas-normalizadas.html">
                     <div class="navigation-link"><span>Recetas</span></div>
                   </a>
                   <a href="despensa.html">
@@ -212,7 +212,7 @@
                       <span>Buscar</span>
                     </div>
                   </a>
-                  <a href="Recetas">
+                  <a href="recetas-normalizadas.html">
                     <div class="navigation-overlay-link">
                       <span>Recetas</span>
                     </div>
@@ -813,103 +813,259 @@
         <div class="buscar-container2">
           <div class="buscar-container3">
             <script defer="" data-name="chef-smart-search">
-              document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
                 (function(){
-                  // State Management
-                  const state = {
-                    pantryEnabled: false,
-                    activeFilters: new Set(),
-                    savedCount: 42,
+                  const STORAGE = {
+                    recipesUser: "chefsmart-recipes-user",
+                    saved: "chefsmart-saved-resources",
+                    have: "chefsmart-have",
+                    avoid: "chefsmart-avoid",
                   }
 
-                  // DOM Elements
-                  const searchInput = document.getElementById("main-search-input")
-                  const searchTrigger = document.getElementById("search-trigger")
-                  const resultsGrid = document.getElementById("results-grid")
-                  const pantryToggle = document.getElementById("pantry-toggle")
-                  const savedRail = document.getElementById("saved-rail")
+                  const baseRecipes = [
+                    { id:"base-1", title:"Crema de calabaza asada", source:"Monsieur Cuisine", type:"exacta", emoji:"🥣", difficulty:"Fácil", time:30, ingredients:["calabaza","cebolla","ajo","aceite oliva","sal"], summary:"Receta directa para MC Smart con sofrito suave y triturado final." },
+                    { id:"base-2", title:"Lentejas con chorizo", source:"Monsieur Cuisine", type:"exacta", emoji:"🍲", difficulty:"Media", time:45, ingredients:["lentejas","cebolla","ajo","chorizo","pimentón"], summary:"Plato de cuchara tradicional con tiempos ajustados para MC Smart." },
+                    { id:"base-3", title:"Espaguetis Carbonara Real", source:"Cookidoo", type:"similar", emoji:"🍝", difficulty:"Media", time:28, ingredients:["espaguetis","huevo","queso","panceta","pimienta"], summary:"Versión adaptable, requiere ajuste de giro inverso y temperatura." },
+                    { id:"base-4", title:"Pollo al curry suave", source:"Blog", type:"similar", emoji:"🍛", difficulty:"Fácil", time:35, ingredients:["pollo","cebolla","curry","leche de coco","sal"], summary:"Curry diario para adaptar a velocidad cuchara y temperatura controlada." }
+                  ]
 
-                  // Search Logic
-                  const handleSearch = () => {
-                    const query = searchInput.value.trim()
-                    if (!query) return
+                  const $ = (s) => document.querySelector(s)
+                  const searchInput = $("#main-search-input")
+                  const searchTrigger = $("#search-trigger")
+                  const resultsGrid = $("#results-grid")
+                  const pantryToggle = $("#pantry-toggle")
+                  const savedRail = $("#saved-rail")
+                  const sourceCount = $("#source-count")
+                  const savedCount = $("#saved-count")
+                  const pantryMatch = $("#pantry-match")
+                  const manualBtn = $("#manual-save-btn")
+                  const manualUrlInput = document.querySelector('.recipe-input')
+                  const analyzeBtn = document.querySelector('.input-row .btn.btn-secondary')
 
-                    // Simulate search loading
-                    searchTrigger.classList.add("loading")
-                    searchTrigger.disabled = true
+                  const normalize = (v) => (v || "").toLowerCase().trim()
+                  const getSet = (k) => new Set(JSON.parse(localStorage.getItem(k) || '[]').map(normalize).filter(Boolean))
+                  const getUserRecipes = () => JSON.parse(localStorage.getItem(STORAGE.recipesUser) || '[]')
+                  const getSaved = () => JSON.parse(localStorage.getItem(STORAGE.saved) || '[]')
 
-                    setTimeout(() => {
-                      searchTrigger.classList.remove("loading")
-                      searchTrigger.disabled = false
-
-                      // Smooth scroll to results
-                      document.getElementById("results-container").scrollIntoView({ behavior: "smooth" })
-                    }, 800)
+                  const keywordScore = (query, recipe) => {
+                    if (!query) return 1
+                    const haystack = `${recipe.title} ${recipe.summary} ${(recipe.ingredients || []).join(' ')}`.toLowerCase()
+                    const terms = query.toLowerCase().split(/[\s,]+/).filter(Boolean)
+                    if (!terms.length) return 1
+                    const hits = terms.filter((term) => haystack.includes(term)).length
+                    return hits / terms.length
                   }
 
-                  // Quick Chips logic
-                  document.querySelectorAll(".search-hero-chip").forEach((chip) => {
-                    chip.addEventListener("click", () => {
-                      searchInput.value = chip.textContent
-                      handleSearch()
+                  const pantryScore = (recipe, haveSet, avoidSet) => {
+                    const ingredients = (recipe.ingredients || []).map(normalize)
+                    if (!ingredients.length) return 0
+                    const hit = ingredients.filter((i) => haveSet.has(i)).length
+                    const avoidPenalty = ingredients.some((i) => avoidSet.has(i)) ? 0.35 : 0
+                    return Math.max(0, hit / ingredients.length - avoidPenalty)
+                  }
+
+                  const renderResults = (items) => {
+                    const grouped = items.reduce((acc, r) => {
+                      const key = r.source || 'Otras fuentes'
+                      acc[key] = acc[key] || []
+                      acc[key].push(r)
+                      return acc
+                    }, {})
+
+                    resultsGrid.innerHTML = Object.entries(grouped).map(([source, recipes]) => {
+                      const badgeClass = source === 'Monsieur Cuisine' ? 'official' : 'compatible'
+                      const badgeText = source === 'Monsieur Cuisine' ? 'Oficial' : 'Adaptable'
+
+                      const cards = recipes.slice(0, 4).map((r) => {
+                        const typeLabel = r.type === 'exacta' ? 'Exacta MC Smart' : 'Similar / Adaptable'
+                        return `
+                          <article class="results-card" data-id="${r.id}">
+                            <div class="results-card-content">
+                              <div class="results-card-meta">
+                                <span class="results-card-tag">${typeLabel}</span>
+                                <span class="results-card-emoji">${r.emoji || '🍽️'}</span>
+                              </div>
+                              <h4 class="results-card-title">${r.title}</h4>
+                              <p class="section-content">${r.summary}</p>
+                            </div>
+                            <div class="results-card-actions">
+                              <button class="btn btn-sm btn-outline" data-action="open">Abrir</button>
+                              <button class="btn btn-sm btn-secondary" data-action="save">Guardar</button>
+                              <button class="btn btn-primary btn-sm" data-action="adapt">Ficha</button>
+                            </div>
+                          </article>
+                        `
+                      }).join('')
+
+                      return `
+                        <div class="results-source-block">
+                          <div class="results-source-header">
+                            <div class="results-source-info">
+                              <span class="results-source-badge ${badgeClass}">${badgeText}</span>
+                              <h3 class="results-source-name">${source}</h3>
+                            </div>
+                          </div>
+                          <div class="results-source-cards">${cards}</div>
+                        </div>
+                      `
+                    }).join('')
+
+                    sourceCount.textContent = Object.keys(grouped).length || 0
+                  }
+
+                  const renderSaved = () => {
+                    const items = getSaved()
+                    savedCount.textContent = items.length
+                    if (!items.length) return
+                    savedRail.innerHTML = items.slice(-8).reverse().map((s) => `
+                      <article class="saved-card status-usable">
+                        <div class="saved-card-badge"><span>Guardada</span></div>
+                        <div class="saved-card-body">
+                          <span class="saved-card-source">${s.source || 'Manual'}</span>
+                          <h4 class="saved-card-title">${s.title}</h4>
+                        </div>
+                        <div class="saved-card-footer">
+                          <a href="adaptar.html?recipe=${encodeURIComponent(s.id)}" class="btn btn-primary btn-sm">Adaptar</a>
+                        </div>
+                      </article>
+                    `).join('')
+                  }
+
+                  const runSearch = () => {
+                    const query = normalize(searchInput.value)
+                    const have = getSet(STORAGE.have)
+                    const avoid = getSet(STORAGE.avoid)
+                    const allRecipes = [...baseRecipes, ...getUserRecipes()]
+
+                    let filtered = allRecipes
+                      .map((r) => ({ ...r, qScore: keywordScore(query, r), pScore: pantryScore(r, have, avoid) }))
+                      .filter((r) => r.qScore > 0 || !query)
+
+                    if (pantryToggle?.checked) filtered = filtered.filter((r) => r.pScore >= 0.35)
+
+                    filtered.sort((a, b) => (b.qScore + b.pScore) - (a.qScore + a.pScore))
+                    renderResults(filtered.length ? filtered : allRecipes)
+
+                    const avg = filtered.length ? Math.round(filtered.reduce((acc, r) => acc + r.pScore, 0) / filtered.length * 100) : 0
+                    pantryMatch.textContent = `${avg}%`
+                    document.getElementById("results-container").scrollIntoView({ behavior: "smooth" })
+                  }
+
+                  const saveRecipe = (recipe) => {
+                    const saved = getSaved()
+                    if (saved.some((s) => s.id === recipe.id)) return
+                    saved.push({ id: recipe.id, title: recipe.title, source: recipe.source })
+                    localStorage.setItem(STORAGE.saved, JSON.stringify(saved))
+                    renderSaved()
+                  }
+
+                  const tryExtractRecipe = async (url) => {
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+                    const html = await fetch(proxyUrl).then((r) => {
+                      if (!r.ok) throw new Error('No se pudo leer la URL')
+                      return r.text()
                     })
+
+                    const doc = new DOMParser().parseFromString(html, 'text/html')
+                    const jsonLdNodes = [...doc.querySelectorAll('script[type="application/ld+json"]')]
+                    let recipeNode = null
+                    for (const node of jsonLdNodes) {
+                      try {
+                        const data = JSON.parse(node.textContent)
+                        const candidates = Array.isArray(data) ? data : [data, ...(data['@graph'] || [])]
+                        recipeNode = candidates.find((c) => c && (c['@type'] === 'Recipe' || (Array.isArray(c['@type']) && c['@type'].includes('Recipe'))))
+                        if (recipeNode) break
+                      } catch (_e) {}
+                    }
+
+                    if (recipeNode) {
+                      return {
+                        id: `url-${Date.now()}`,
+                        title: recipeNode.name || 'Receta importada',
+                        source: new URL(url).hostname.replace('www.', ''),
+                        type: 'similar',
+                        emoji: '🔎',
+                        difficulty: 'Media',
+                        time: 35,
+                        summary: recipeNode.description || 'Receta importada desde recurso externo.',
+                        ingredients: (recipeNode.recipeIngredient || []).map((i) => normalize(i).split(',')[0]).filter(Boolean).slice(0, 12),
+                      }
+                    }
+
+                    const fallbackTitle = doc.querySelector('h1')?.textContent?.trim() || 'Receta importada'
+                    const ing = [...doc.querySelectorAll('li')].map((li) => li.textContent.trim()).filter((t) => /g\b|ml\b|cda|cucharada|taza|kg|ingred/i.test(t)).slice(0, 10)
+                    return {
+                      id: `url-${Date.now()}`,
+                      title: fallbackTitle,
+                      source: new URL(url).hostname.replace('www.', ''),
+                      type: 'similar',
+                      emoji: '🔎',
+                      difficulty: 'Media',
+                      time: 35,
+                      summary: 'Importada con extracción heurística. Revisa ingredientes y pasos.',
+                      ingredients: ing.map((v) => normalize(v)),
+                    }
+                  }
+
+                  const saveImportedRecipe = (recipe) => {
+                    const recipes = getUserRecipes()
+                    recipes.push(recipe)
+                    localStorage.setItem(STORAGE.recipesUser, JSON.stringify(recipes))
+                    saveRecipe(recipe)
+                  }
+
+                  searchTrigger.addEventListener("click", runSearch)
+                  searchInput.addEventListener("keypress", (e) => e.key === "Enter" && runSearch())
+                  pantryToggle?.addEventListener("change", runSearch)
+                  document.querySelectorAll(".search-hero-chip").forEach((chip) => chip.addEventListener("click", () => {
+                    searchInput.value = chip.textContent.trim()
+                    runSearch()
+                  }))
+
+                  resultsGrid.addEventListener('click', (e) => {
+                    const card = e.target.closest('.results-card')
+                    if (!card) return
+                    const recipeId = card.getAttribute('data-id')
+                    const recipe = [...baseRecipes, ...getUserRecipes()].find((r) => r.id === recipeId)
+                    if (!recipe) return
+
+                    const action = e.target.getAttribute('data-action')
+                    if (action === 'save') saveRecipe(recipe)
+                    if (action === 'adapt') window.location.href = `adaptar.html?recipe=${encodeURIComponent(recipe.id)}`
+                    if (action === 'open') {
+                      searchInput.value = recipe.title
+                      runSearch()
+                    }
                   })
 
-                  // Event Listeners
-                  searchTrigger.addEventListener("click", handleSearch)
-
-                  searchInput.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") handleSearch()
+                  analyzeBtn?.addEventListener('click', async () => {
+                    const url = manualUrlInput?.value?.trim()
+                    if (!url) return alert('Pega una URL válida para analizar la receta.')
+                    analyzeBtn.disabled = true
+                    analyzeBtn.textContent = 'Analizando...'
+                    try {
+                      const recipe = await tryExtractRecipe(url)
+                      saveImportedRecipe(recipe)
+                      searchInput.value = recipe.title
+                      runSearch()
+                      alert(`Receta importada: ${recipe.title}`)
+                    } catch (err) {
+                      alert('No se pudo extraer automáticamente. Copia título, ingredientes y pasos de forma manual.')
+                    } finally {
+                      analyzeBtn.disabled = false
+                      analyzeBtn.textContent = 'Analizar'
+                    }
                   })
 
-                  if (pantryToggle) {
-                    pantryToggle.addEventListener("change", (e) => {
-                      state.pantryEnabled = e.target.checked
-                      // Visual feedback
-                      const results = document.querySelectorAll(".results-card")
-                      results.forEach((card) => {
-                        card.style.opacity = state.pantryEnabled ? "0.7" : "1"
-                        // Logic would filter based on ingredients here
-                      })
-                    })
-                  }
-
-                  // Horizontal Scroll Buttons
-                  const railNav = {
-                    prev: document.querySelector(".nav-btn.prev"),
-                    next: document.querySelector(".nav-btn.next"),
-                  }
-
-                  if (railNav.next && savedRail) {
-                    railNav.next.addEventListener("click", () => {
-                      savedRail.scrollBy({ left: 300, behavior: "smooth" })
-                    })
-                  }
-
-                  if (railNav.prev && savedRail) {
-                    railNav.prev.addEventListener("click", () => {
-                      savedRail.scrollBy({ left: -300, behavior: "smooth" })
-                    })
-                  }
-
-                  // Conversion Step Simulation
-                  document.querySelectorAll(".step-item").forEach((step, index) => {
-                    step.addEventListener("click", () => {
-                      document.querySelectorAll(".step-item").forEach((s) => s.classList.remove("active"))
-                      step.classList.add("active")
-                    })
+                  manualBtn?.addEventListener('click', () => {
+                    window.location.href = 'adaptar.html'
                   })
 
-                  // Manual Save Logic
-                  const manualBtn = document.getElementById("manual-save-btn")
-                  if (manualBtn) {
-                    manualBtn.addEventListener("click", () => {
-                      alert("Abriendo editor de ficha manual para Monsieur Cuisine Smart...")
-                    })
-                  }
+                  renderSaved()
+                  runSearch()
                 })()
               });
-            </script>
+                </script>
           </div>
         </div>
         <footer-wrapper class="footer-wrapper">

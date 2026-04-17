@@ -95,7 +95,7 @@
                   <a href="buscar.html">
                     <div class="navigation-link"><span>Buscar</span></div>
                   </a>
-                  <a href="Recetas">
+                  <a href="recetas-normalizadas.html">
                     <div class="navigation-link"><span>Recetas</span></div>
                   </a>
                   <a href="despensa.html">
@@ -212,7 +212,7 @@
                       <span>Buscar</span>
                     </div>
                   </a>
-                  <a href="Recetas">
+                  <a href="recetas-normalizadas.html">
                     <div class="navigation-overlay-link">
                       <span>Recetas</span>
                     </div>
@@ -771,69 +771,64 @@
         <div class="men-container4">
           <div class="men-container5">
             <script defer="" data-name="menu-generator">
-              document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
                 (function(){
-                  // Simple tab/accordion logic is handled by native HTML <details>
-                  // Range value update
-                  const rangeInput = document.querySelector(".custom-range")
-                  const rangeValue = document.querySelector(".range-value")
+                  const get = (k) => JSON.parse(localStorage.getItem(k) || '[]')
+                  const have = new Set(get('chefsmart-have').map((v) => String(v).toLowerCase()))
+                  const saved = get('chefsmart-saved-resources')
+                  const imported = get('chefsmart-recipes-user')
 
+                  const fallbackMenu = [
+                    { meal:'Desayuno', title:'Avena cremosa con manzana', text:'Lista en 10 min, compatible con vaso y mariposa.' },
+                    { meal:'Comida', title:'Lentejas express', text:'Adaptación rápida en cocción guiada Smart.' },
+                    { meal:'Merienda', title:'Hummus con pimentón', text:'Aprovecha garbanzos cocidos y ajo.' },
+                    { meal:'Cena', title:'Crema de verduras', text:'Baja carga y alta compatibilidad de despensa.' },
+                  ]
+
+                  const selected = (saved.concat(imported)).slice(-4).reverse()
+                  const cards = document.querySelectorAll('.daily-proposal-section .menu-card')
+                  cards.forEach((card, idx) => {
+                    const mealTag = card.querySelector('.meal-tag')?.textContent?.trim() || fallbackMenu[idx]?.meal
+                    const item = selected[idx]
+                    const titleEl = card.querySelector('h3')
+                    const textEl = card.querySelector('p.section-content')
+                    const action = card.querySelector('button')
+
+                    if (item) {
+                      if (titleEl) titleEl.textContent = item.title
+                      if (textEl) textEl.textContent = `Fuente: ${item.source || 'Guardada'}. Lista para adaptar y cocinar en MC Smart.`
+                      if (action) {
+                        action.textContent = 'Adaptar ahora'
+                        action.addEventListener('click', () => {
+                          window.location.href = `adaptar.html?recipe=${encodeURIComponent(item.id)}`
+                        })
+                      }
+                    } else if (fallbackMenu[idx]) {
+                      if (titleEl) titleEl.textContent = fallbackMenu[idx].title
+                      if (textEl) textEl.textContent = fallbackMenu[idx].text
+                    }
+                  })
+
+                  const pantryPercent = (() => {
+                    if (!have.size) return 65
+                    const strong = ['cebolla','ajo','aceite oliva','sal','tomate','arroz']
+                    const hits = strong.filter((i) => have.has(i)).length
+                    return Math.min(98, 55 + hits * 7)
+                  })()
+
+                  const statNums = document.querySelectorAll('.stat-num')
+                  if (statNums[0]) statNums[0].textContent = `${pantryPercent}%`
+
+                  const rangeInput = document.querySelector('.custom-range')
+                  const rangeValue = document.querySelector('.range-value')
                   if (rangeInput && rangeValue) {
-                    rangeInput.addEventListener("input", (e) => {
+                    rangeInput.addEventListener('input', (e) => {
                       rangeValue.textContent = `${e.target.value} min`
                     })
                   }
-
-                  // Simple Scroll interaction for Timeline
-                  const timelineScroll = document.querySelector(".timeline-scroll")
-                  if (timelineScroll) {
-                    let isDown = false
-                    let startX
-                    let scrollLeft
-
-                    timelineScroll.addEventListener("mousedown", (e) => {
-                      isDown = true
-                      startX = e.pageX - timelineScroll.offsetLeft
-                      scrollLeft = timelineScroll.scrollLeft
-                    })
-                    timelineScroll.addEventListener("mouseleave", () => {
-                      isDown = false
-                    })
-                    timelineScroll.addEventListener("mouseup", () => {
-                      isDown = false
-                    })
-                    timelineScroll.addEventListener("mousemove", (e) => {
-                      if (!isDown) return
-                      e.preventDefault()
-                      const x = e.pageX - timelineScroll.offsetLeft
-                      const walk = (x - startX) * 2
-                      timelineScroll.scrollLeft = scrollLeft - walk
-                    })
-                  }
-
-                  // Animation for cards reveal on scroll (Medium intensity)
-                  const observerOptions = {
-                    threshold: 0.1,
-                  }
-
-                  const observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry) => {
-                      if (entry.isIntersecting) {
-                        entry.target.style.opacity = "1"
-                        entry.target.style.transform = "translateY(0)"
-                      }
-                    })
-                  }, observerOptions)
-
-                  document.querySelectorAll(".menu-card, .pantry-stat-card").forEach((el) => {
-                    el.style.opacity = "0"
-                    el.style.transform = "translateY(20px)"
-                    el.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out"
-                    observer.observe(el)
-                  })
                 })()
               });
-            </script>
+                </script>
           </div>
         </div>
         <footer-wrapper class="footer-wrapper">

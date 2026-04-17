@@ -95,7 +95,7 @@
                   <a href="buscar.html">
                     <div class="navigation-link"><span>Buscar</span></div>
                   </a>
-                  <a href="Recetas">
+                  <a href="recetas-normalizadas.html">
                     <div class="navigation-link"><span>Recetas</span></div>
                   </a>
                   <a href="despensa.html">
@@ -212,7 +212,7 @@
                       <span>Buscar</span>
                     </div>
                   </a>
-                  <a href="Recetas">
+                  <a href="recetas-normalizadas.html">
                     <div class="navigation-overlay-link">
                       <span>Recetas</span>
                     </div>
@@ -754,56 +754,57 @@
         <div class="adaptar-container4">
           <div class="adaptar-container5">
             <script defer="" data-name="chef-smart-logic">
-              document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
                 (function(){
-                  const scaleRange = document.getElementById("scale-range")
-                  const scaleIndicator = document.getElementById("scale-indicator")
-                  const startBtn = document.getElementById("start-adapt")
-                  const textarea = document.querySelector(".editor-textarea")
-                  const preview = document.getElementById("adapted-content")
+                  const params = new URLSearchParams(window.location.search)
+                  const recipeId = params.get('recipe')
+                  const get = (k) => JSON.parse(localStorage.getItem(k) || '[]')
+                  const allRecipes = get('chefsmart-recipes-user').concat(get('chefsmart-saved-resources'))
 
-                  if (scaleRange) {
-                    scaleRange.addEventListener("input", (e) => {
-                      scaleIndicator.textContent = `${e.target.value}x`
-                    })
+                  const scaleRange = document.getElementById('scale-range')
+                  const scaleIndicator = document.getElementById('scale-indicator')
+                  const startBtn = document.getElementById('start-adapt')
+                  const textarea = document.querySelector('.editor-textarea')
+                  const preview = document.getElementById('adapted-content')
+
+                  const selectedRecipe = recipeId ? allRecipes.find((r) => r.id === recipeId) : null
+                  if (selectedRecipe && textarea) {
+                    const ingredientLines = (selectedRecipe.ingredients || []).map((i) => `- ${i}`).join("\\n")
+                    const seed = `Receta: ${selectedRecipe.title}\\n\\nIngredientes:\\n${ingredientLines}\\n\\nPasos:\\n1. Sofríe velocidad cuchara 5 min.\\n2. Cocina a varoma 20 min.`
+                    textarea.value = seed
                   }
 
-                  if (startBtn) {
-                    startBtn.addEventListener("click", () => {
-                      document.querySelector(".editor-pasos").scrollIntoView({ behavior: "smooth" })
-                    })
+                  const adaptText = (text, scale) => {
+                    const temp = text
+                      .replace(/velocidad cuchara/gi, 'Vel 1 + Giro Inverso')
+                      .replace(/varoma/gi, '120°C')
+                      .replace(/velocidad (\d+)/gi, (_, v) => `Vel ${Math.min(10, Number(v))}`)
+                    return temp.replace(/(\d+)(\s?g|\s?ml|\s?min)/gi, (m, n, unit) => `${Math.round(Number(n) * scale)}${unit}`)
                   }
 
-                  if (textarea) {
-                    textarea.addEventListener("input", (e) => {
-                      const text = e.target.value
-                      if (text.length > 10) {
-                        let adapted = text
-                          .replace(/velocidad cuchara/gi, '<strong style="color:var(--color-primary)">Vel 1 + Giro Inverso</strong>')
-                          .replace(/varoma/gi, '<strong style="color:var(--color-primary)">120°C</strong>')
-                          .replace(/velocidad (\d+)/gi, (match, p1) => {
-                            const vel = parseInt(p1)
-                            return vel > 10 ? "Vel 10 (Límite Smart)" : match
-                          })
-
-                        preview.innerHTML = `<div class="adapted-step-card" style="line-height:1.6">${adapted}</div>`
-                      } else {
-                        preview.innerHTML = '<div class="empty-state">La versión adaptada aparecerá aquí automáticamente.</div>'
-                      }
-                    })
+                  const renderPreview = () => {
+                    const text = textarea?.value?.trim() || ''
+                    const scale = Number(scaleRange?.value || 1)
+                    if (!text) {
+                      preview.innerHTML = '<div class="empty-state">La versión adaptada aparecerá aquí automáticamente.</div>'
+                      return
+                    }
+                    const adapted = adaptText(text, scale)
+                    preview.innerHTML = `<div class="adapted-step-card" style="line-height:1.6; white-space:pre-wrap">${adapted}</div>`
                   }
 
-                  const switches = document.querySelectorAll(".switch input")
-                  switches.forEach((sw) => {
-                    sw.addEventListener("change", () => {
-                      if (textarea.value) {
-                        textarea.dispatchEvent(new Event("input"))
-                      }
-                    })
+                  scaleRange?.addEventListener('input', (e) => {
+                    scaleIndicator.textContent = `${e.target.value}x`
+                    renderPreview()
                   })
+                  textarea?.addEventListener('input', renderPreview)
+                  startBtn?.addEventListener('click', () => {
+                    document.querySelector('.editor-pasos').scrollIntoView({ behavior: 'smooth' })
+                  })
+                  renderPreview()
                 })()
               });
-            </script>
+                </script>
           </div>
         </div>
         <footer-wrapper class="footer-wrapper">
