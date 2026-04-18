@@ -4691,6 +4691,11 @@
   transition: transform 0.3s ease;
   border-radius: var(--border-radius-card);
 }
+
+.recetas-normalizadas-recipe-card.is-active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
  
 .recipe-card-media {
   height: 220px;
@@ -4765,6 +4770,10 @@
 .recipe-detail-view {
   padding: var(--spacing-3xl) 0;
   background: var(--color-surface-elevated);
+}
+
+.recipe-detail-view.is-hidden {
+  display: none;
 }
  
 .detail-container {
