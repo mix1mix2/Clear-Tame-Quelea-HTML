@@ -4841,6 +4841,22 @@
   list-style: none;
   flex-direction: column;
 }
+
+.servings-adjuster {
+  gap: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+}
+
+.servings-adjuster-controls {
+  gap: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+}
+
+.servings-adjuster-controls .filter-input {
+  max-width: 120px;
+}
  
 .missing-alert {
   padding: var(--spacing-md);
@@ -5016,6 +5032,26 @@
 .target {
   color: var(--color-primary);
   font-weight: var(--font-weight-medium);
+}
+
+.recipe-sources {
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-md);
+  background: var(--color-surface);
+  border-radius: var(--border-radius-md);
+}
+
+.recipe-source-list {
+  gap: var(--spacing-xs);
+  margin: var(--spacing-sm) 0 0;
+  padding-left: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-source-list a {
+  color: var(--color-primary);
+  text-decoration: underline;
 }
  
 .related-resources {
