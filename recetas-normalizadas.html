@@ -593,7 +593,7 @@
         </section>
         <section class="recetas-normalizadas-recipe-showcase">
           <div class="recetas-normalizadas-recipe-grid">
-            <article class="recetas-normalizadas-recipe-card">
+            <article class="recetas-normalizadas-recipe-card" data-recipe-id="crema-calabaza-jengibre">
               <div class="recipe-card-media">
                 <img
                   src="https://images.pexels.com/photos/4590938/pexels-photo-4590938.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
@@ -640,8 +640,8 @@
                   <span class="tag">Ligero</span>
                 </div>
                 <div class="recetas-normalizadas-card-actions">
-                  <button class="btn btn-primary btn-sm">Abrir ficha</button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-primary btn-sm" data-action="open">Abrir ficha</button>
+                  <button class="btn btn-outline btn-sm" data-action="adaptar" aria-label="Adaptar receta">
                     <svg
                       width="14"
                       height="14"
@@ -660,7 +660,7 @@
                 </div>
               </div>
             </article>
-            <article class="recetas-normalizadas-recipe-card">
+            <article class="recetas-normalizadas-recipe-card" data-recipe-id="pollo-curry-express">
               <div class="recipe-card-media">
                 <img
                   src="https://images.pexels.com/photos/29145758/pexels-photo-29145758.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
@@ -709,8 +709,8 @@
                   <span class="tag">Proteico</span>
                 </div>
                 <div class="recetas-normalizadas-card-actions">
-                  <button class="btn btn-primary btn-sm">Abrir ficha</button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-primary btn-sm" data-action="open">Abrir ficha</button>
+                  <button class="btn btn-outline btn-sm" data-action="adaptar" aria-label="Adaptar receta">
                     <svg
                       width="14"
                       height="14"
@@ -729,7 +729,7 @@
                 </div>
               </div>
             </article>
-            <article class="recetas-normalizadas-recipe-card">
+            <article class="recetas-normalizadas-recipe-card" data-recipe-id="risotto-setas-shiitake">
               <div class="recipe-card-media">
                 <img
                   src="https://images.pexels.com/photos/8629098/pexels-photo-8629098.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
@@ -776,8 +776,8 @@
                   <span class="tag">Gourmet</span>
                 </div>
                 <div class="recetas-normalizadas-card-actions">
-                  <button class="btn btn-primary btn-sm">Abrir ficha</button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-primary btn-sm" data-action="open">Abrir ficha</button>
+                  <button class="btn btn-outline btn-sm" data-action="adaptar" aria-label="Adaptar receta">
                     <svg
                       width="14"
                       height="14"
@@ -796,7 +796,7 @@
                 </div>
               </div>
             </article>
-            <article class="recetas-normalizadas-recipe-card">
+            <article class="recetas-normalizadas-recipe-card" data-recipe-id="smoothie-bowl-frutos-rojos">
               <div class="recipe-card-media">
                 <img
                   src="https://images.pexels.com/photos/4252146/pexels-photo-4252146.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
@@ -845,8 +845,8 @@
                   <span class="tag">Desayuno</span>
                 </div>
                 <div class="recetas-normalizadas-card-actions">
-                  <button class="btn btn-primary btn-sm">Abrir ficha</button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-primary btn-sm" data-action="open">Abrir ficha</button>
+                  <button class="btn btn-outline btn-sm" data-action="adaptar" aria-label="Adaptar receta">
                     <svg
                       width="14"
                       height="14"
@@ -865,7 +865,7 @@
                 </div>
               </div>
             </article>
-            <article class="recetas-normalizadas-recipe-card">
+            <article class="recetas-normalizadas-recipe-card" data-recipe-id="lentejas-estilo-casero">
               <div class="recipe-card-media">
                 <img
                   src="https://images.pexels.com/photos/8629103/pexels-photo-8629103.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
@@ -912,8 +912,8 @@
                   <span class="tag">Tradicional</span>
                 </div>
                 <div class="recetas-normalizadas-card-actions">
-                  <button class="btn btn-primary btn-sm">Abrir ficha</button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-primary btn-sm" data-action="open">Abrir ficha</button>
+                  <button class="btn btn-outline btn-sm" data-action="adaptar" aria-label="Adaptar receta">
                     <svg
                       width="14"
                       height="14"
@@ -932,7 +932,7 @@
                 </div>
               </div>
             </article>
-            <article class="recetas-normalizadas-recipe-card">
+            <article class="recetas-normalizadas-recipe-card" data-recipe-id="salmon-vapor-citricos">
               <div class="recipe-card-media">
                 <img
                   src="https://images.pexels.com/photos/8629107/pexels-photo-8629107.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
@@ -981,8 +981,8 @@
                   <span class="tag">Saludable</span>
                 </div>
                 <div class="recetas-normalizadas-card-actions">
-                  <button class="btn btn-primary btn-sm">Abrir ficha</button>
-                  <button class="btn btn-outline btn-sm">
+                  <button class="btn btn-primary btn-sm" data-action="open">Abrir ficha</button>
+                  <button class="btn btn-outline btn-sm" data-action="adaptar" aria-label="Adaptar receta">
                     <svg
                       width="14"
                       height="14"
@@ -1003,17 +1003,18 @@
             </article>
           </div>
         </section>
-        <section class="recipe-detail-view">
+        <section class="recipe-detail-view is-hidden" id="recipe-detail-view">
           <div class="detail-container">
             <div class="detail-header-block">
               <div class="detail-visual">
                 <img
+                  id="detail-image"
                   src="https://images.pexels.com/photos/8629107/pexels-photo-8629107.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1500"
                   alt="Receta Detalle"
                 />
               </div>
               <div class="detail-info">
-                <h2 class="recetas-normalizadas-hero-title hero-title">
+                <h2 class="recetas-normalizadas-hero-title hero-title" id="detail-title">
                   Crema de Calabaza y Jengibre
                 </h2>
                 <div class="detail-stats">
@@ -1030,7 +1031,7 @@
                         d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589a5 5 0 0 0-9.186 0a4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1ZM6 17h12"
                       ></path>
                     </svg>
-                    <span>4 Personas</span>
+                    <span id="detail-servings">4 Personas</span>
                   </div>
                   <div class="stat-pill">
                     <svg
@@ -1044,7 +1045,7 @@
                       <circle cx="12" cy="12" r="10"></circle>
                       <path d="M12 6v6l4 2"></path>
                     </svg>
-                    <span>25 min</span>
+                    <span id="detail-time">25 min</span>
                   </div>
                   <div class="stat-pill">
                     <svg
@@ -1059,7 +1060,7 @@
                         d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
                       ></path>
                     </svg>
-                    <span>Bajo Coste</span>
+                    <span id="detail-cost">Bajo Coste</span>
                   </div>
                 </div>
               </div>
@@ -1068,118 +1069,19 @@
               <div class="detail-grid">
                 <div class="ingredients-panel">
                   <h3 class="section-title">Ingredientes</h3>
-                  <ul class="recetas-normalizadas-ingredient-list">
-                    <li class="section-content">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="var(--color-secondary)"
-                        stroke-width="3"
-                      >
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                      <span>800g Calabaza troceada</span>
-                    </li>
-                    <li class="section-content">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="var(--color-secondary)"
-                        stroke-width="3"
-                      >
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                      <span>1 Cebolla mediana</span>
-                    </li>
-                    <li class="section-content">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="var(--color-secondary)"
-                        stroke-width="3"
-                      >
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                      <span>1 Trozo de jengibre fresco</span>
-                    </li>
-                    <li class="section-content missing">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#e74c3c"
-                        stroke-width="3"
-                      >
-                        <path d="M18 6L6 18M6 6l12 12"></path>
-                      </svg>
-                      <span>200ml Leche de coco</span>
-                    </li>
-                    <li class="section-content">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="var(--color-secondary)"
-                        stroke-width="3"
-                      >
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                      <span>Sal, pimienta y aceite</span>
-                    </li>
-                  </ul>
+                  <ul class="recetas-normalizadas-ingredient-list" id="detail-ingredients"></ul>
                   <div class="missing-alert">
                     <span class="section-content">
                       <span>Faltan</span>
-                      <span class="recetas-normalizadas-text48">1</span>
+                      <span class="recetas-normalizadas-text48" id="detail-missing-count">1</span>
                       <span>ingredientes en tu despensa.</span>
                     </span>
                   </div>
                 </div>
                 <div class="steps-panel">
                   <h3 class="section-title">Pasos de Preparación</h3>
-                  <div class="recetas-normalizadas-step-item">
-                    <div class="recetas-normalizadas-step-number">
-                      <span>1</span>
-                    </div>
-                    <p class="section-content">
-                      Trocear la cebolla y el jengibre: 5 seg / Vel 5. Bajar
-                      restos con la espátula.
-                    </p>
-                  </div>
-                  <div class="recetas-normalizadas-step-item">
-                    <div class="recetas-normalizadas-step-number">
-                      <span>2</span>
-                    </div>
-                    <p class="section-content">
-                      Añadir aceite y sofreír: 3 min / 120°C / Vel 1.
-                    </p>
-                  </div>
-                  <div class="recetas-normalizadas-step-item">
-                    <div class="recetas-normalizadas-step-number">
-                      <span>3</span>
-                    </div>
-                    <p class="section-content">
-                      Incorporar la calabaza y rehogar: 5 min / 100°C / Vel 1.
-                    </p>
-                  </div>
-                  <div class="recetas-normalizadas-step-item">
-                    <div class="recetas-normalizadas-step-number">
-                      <span>4</span>
-                    </div>
-                    <p class="section-content">
-                      Añadir agua o caldo hasta cubrir y cocer: 20 min / 100°C /
-                      Vel 1.
-                    </p>
-                  </div>
-                  <button class="full-width btn btn-accent btn-lg">
+                  <div id="detail-steps"></div>
+                  <button class="full-width btn btn-accent btn-lg" id="detail-adapt-button">
                     Adaptar a MC Smart
                   </button>
                 </div>
@@ -1435,38 +1337,211 @@
           <div class="recetas-normalizadas-container3">
             <script defer="" data-name="chef-smart-logic">
               (function(){
-                // Pantry Score Logic
-                const updatePantryScore = (recipeId, availableCount, totalCount, penalty = 0) => {
-                  const percentage = (availableCount / totalCount) * 100
-                  let score = 50 + percentage * 0.35 - penalty
-                  score = Math.min(100, Math.max(0, score))
-                  return Math.round(score)
+                const recipeData = {
+                  "crema-calabaza-jengibre": {
+                    title: "Crema de Calabaza y Jengibre",
+                    image: "https://images.pexels.com/photos/4590938/pexels-photo-4590938.jpeg?auto=compress&cs=tinysrgb&w=1500",
+                    servings: "4 Personas",
+                    time: "25 min",
+                    cost: "Bajo Coste",
+                    missingCount: 1,
+                    ingredients: [
+                      { text: "800g Calabaza troceada", missing: false },
+                      { text: "1 Cebolla mediana", missing: false },
+                      { text: "1 Trozo de jengibre fresco", missing: false },
+                      { text: "200ml Leche de coco", missing: true },
+                      { text: "Sal, pimienta y aceite", missing: false },
+                    ],
+                    steps: [
+                      "Trocear cebolla y jengibre: 5 seg / Vel 5.",
+                      "Añadir aceite y sofreír: 3 min / 120°C / Vel 1.",
+                      "Incorporar calabaza y cocer: 20 min / 100°C / Vel 1.",
+                      "Triturar: 40 seg / Vel progresiva 5-10 y ajustar sal.",
+                    ],
+                  },
+                  "pollo-curry-express": {
+                    title: "Pollo al Curry Express",
+                    image: "https://images.pexels.com/photos/29145758/pexels-photo-29145758.jpeg?auto=compress&cs=tinysrgb&w=1500",
+                    servings: "4 Personas",
+                    time: "40 min",
+                    cost: "Coste medio",
+                    missingCount: 2,
+                    ingredients: [
+                      { text: "500g pechuga de pollo", missing: false },
+                      { text: "1 cebolla", missing: false },
+                      { text: "Curry en polvo", missing: false },
+                      { text: "Leche de coco", missing: true },
+                      { text: "Arroz basmati", missing: true },
+                    ],
+                    steps: [
+                      "Picar cebolla y sofreír: 5 min / 120°C / Vel 1.",
+                      "Añadir pollo y sellar: 6 min / 120°C / giro inverso vel 1.",
+                      "Agregar curry, leche de coco y cocinar: 20 min / 100°C / giro inverso vel 1.",
+                      "Servir con arroz cocido.",
+                    ],
+                  },
+                  "risotto-setas-shiitake": {
+                    title: "Risotto de Setas Shiitake",
+                    image: "https://images.pexels.com/photos/8629098/pexels-photo-8629098.jpeg?auto=compress&cs=tinysrgb&w=1500",
+                    servings: "3 Personas",
+                    time: "35 min",
+                    cost: "Coste medio",
+                    missingCount: 1,
+                    ingredients: [
+                      { text: "250g arroz arborio", missing: false },
+                      { text: "Setas shiitake", missing: false },
+                      { text: "Caldo vegetal", missing: false },
+                      { text: "Queso parmesano", missing: true },
+                      { text: "Mantequilla", missing: false },
+                    ],
+                    steps: [
+                      "Picar ajo y cebolla: 5 seg / Vel 5.",
+                      "Sofreír con mantequilla: 4 min / 120°C / Vel 1.",
+                      "Añadir arroz y setas, rehogar 2 min / 100°C / giro inverso vel 1.",
+                      "Incorporar caldo en tandas y terminar con parmesano.",
+                    ],
+                  },
+                  "smoothie-bowl-frutos-rojos": {
+                    title: "Smoothie Bowl de Frutos Rojos",
+                    image: "https://images.pexels.com/photos/4252146/pexels-photo-4252146.jpeg?auto=compress&cs=tinysrgb&w=1500",
+                    servings: "2 Personas",
+                    time: "10 min",
+                    cost: "Bajo Coste",
+                    missingCount: 0,
+                    ingredients: [
+                      { text: "Frutos rojos congelados", missing: false },
+                      { text: "Plátano", missing: false },
+                      { text: "Yogur natural", missing: false },
+                      { text: "Avena", missing: false },
+                    ],
+                    steps: [
+                      "Triturar todos los ingredientes 45 seg / Vel 8.",
+                      "Servir en bowl y decorar con semillas y fruta fresca.",
+                    ],
+                  },
+                  "lentejas-estilo-casero": {
+                    title: "Lentejas Estilo Casero",
+                    image: "https://images.pexels.com/photos/8629103/pexels-photo-8629103.jpeg?auto=compress&cs=tinysrgb&w=1500",
+                    servings: "5 Personas",
+                    time: "50 min",
+                    cost: "Bajo Coste",
+                    missingCount: 0,
+                    ingredients: [
+                      { text: "Lentejas pardinas", missing: false },
+                      { text: "Zanahoria", missing: false },
+                      { text: "Pimiento verde", missing: false },
+                      { text: "Pimentón dulce", missing: false },
+                      { text: "Laurel", missing: false },
+                    ],
+                    steps: [
+                      "Picar verduras: 6 seg / Vel 5.",
+                      "Sofreír: 5 min / 120°C / Vel 1.",
+                      "Añadir lentejas y agua: 35 min / 100°C / giro inverso vel 1.",
+                      "Reposar 5 minutos y servir.",
+                    ],
+                  },
+                  "salmon-vapor-citricos": {
+                    title: "Salmón al Vapor con Cítricos",
+                    image: "https://images.pexels.com/photos/8629107/pexels-photo-8629107.jpeg?auto=compress&cs=tinysrgb&w=1500",
+                    servings: "2 Personas",
+                    time: "20 min",
+                    cost: "Coste alto",
+                    missingCount: 2,
+                    ingredients: [
+                      { text: "2 lomos de salmón", missing: false },
+                      { text: "Rodajas de limón y naranja", missing: false },
+                      { text: "Eneldo fresco", missing: true },
+                      { text: "Espárragos", missing: true },
+                    ],
+                    steps: [
+                      "Colocar salmón y cítricos en bandeja varoma.",
+                      "Añadir 600 ml de agua al vaso.",
+                      "Cocinar al vapor: 18 min / Varoma / Vel 1.",
+                      "Servir con verduras al gusto.",
+                    ],
+                  },
                 }
 
-                // Simple Tab Simulation (if needed for future expansion)
-                const tabs = document.querySelectorAll(".nav-tab")
-                tabs.forEach((tab) => {
-                  tab.addEventListener("click", () => {
-                    tabs.forEach((t) => t.classList.remove("active"))
-                    tab.classList.add("active")
-                  })
+                const detailView = document.getElementById("recipe-detail-view")
+                const detailImage = document.getElementById("detail-image")
+                const detailTitle = document.getElementById("detail-title")
+                const detailServings = document.getElementById("detail-servings")
+                const detailTime = document.getElementById("detail-time")
+                const detailCost = document.getElementById("detail-cost")
+                const detailIngredients = document.getElementById("detail-ingredients")
+                const detailSteps = document.getElementById("detail-steps")
+                const detailMissing = document.getElementById("detail-missing-count")
+                const detailAdaptButton = document.getElementById("detail-adapt-button")
+                const cards = Array.from(document.querySelectorAll(".recetas-normalizadas-recipe-card"))
+                let activeRecipeId = null
+
+                const renderIngredients = (ingredients) => {
+                  detailIngredients.innerHTML = ingredients.map((item) => `
+                    <li class="section-content ${item.missing ? "missing" : ""}">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${item.missing ? "#e74c3c" : "var(--color-secondary)"}" stroke-width="3">
+                        ${item.missing ? '<path d="M18 6L6 18M6 6l12 12"></path>' : '<path d="M20 6L9 17l-5-5"></path>'}
+                      </svg>
+                      <span>${item.text}</span>
+                    </li>
+                  `).join("")
+                }
+
+                const renderSteps = (steps) => {
+                  detailSteps.innerHTML = steps.map((step, idx) => `
+                    <div class="recetas-normalizadas-step-item">
+                      <div class="recetas-normalizadas-step-number"><span>${idx + 1}</span></div>
+                      <p class="section-content">${step}</p>
+                    </div>
+                  `).join("")
+                }
+
+                const openRecipe = (recipeId) => {
+                  const recipe = recipeData[recipeId]
+                  if (!recipe) return
+
+                  activeRecipeId = recipeId
+                  detailTitle.textContent = recipe.title
+                  detailImage.src = recipe.image
+                  detailImage.alt = recipe.title
+                  detailServings.textContent = recipe.servings
+                  detailTime.textContent = recipe.time
+                  detailCost.textContent = recipe.cost
+                  detailMissing.textContent = recipe.missingCount
+                  renderIngredients(recipe.ingredients)
+                  renderSteps(recipe.steps)
+                  detailAdaptButton.setAttribute("data-recipe-id", recipeId)
+
+                  cards.forEach((card) => card.classList.toggle("is-active", card.dataset.recipeId === recipeId))
+                  detailView.classList.remove("is-hidden")
+                  detailView.scrollIntoView({ behavior: "smooth", block: "start" })
+                }
+
+                document.addEventListener("click", (event) => {
+                  const actionButton = event.target.closest("button[data-action]")
+                  if (!actionButton) return
+
+                  const card = actionButton.closest(".recetas-normalizadas-recipe-card")
+                  const recipeId = card?.dataset.recipeId
+                  if (!recipeId) return
+
+                  if (actionButton.dataset.action === "open") {
+                    openRecipe(recipeId)
+                    return
+                  }
+
+                  if (actionButton.dataset.action === "adaptar") {
+                    window.location.href = `adaptar.html?recipe=${encodeURIComponent(recipeId)}`
+                  }
                 })
 
-                // Accordion Behavior is native via <details>, no JS required for toggle.
+                detailAdaptButton?.addEventListener("click", () => {
+                  if (!activeRecipeId) return
+                  window.location.href = `adaptar.html?recipe=${encodeURIComponent(activeRecipeId)}`
+                })
 
-                // Adaptation Calculation Simulation
-                const calculateAdaptation = () => {
-                  const origin = document.querySelector('input[value="4"]')?.value || 4
-                  const target = document.querySelector('input[value="6"]')?.value || 6
-                  const ratio = target / origin
-
-                  // In a real app, this would update the DOM with calculated values
-                  console.log(`Adaptation Ratio: ${ratio}`)
-                }
-
-                // Initial animations or state setup
                 document.addEventListener("DOMContentLoaded", () => {
-                  // Logic for scroll reveals or dynamic score updates could go here
+                  const requestedRecipe = new URLSearchParams(window.location.search).get("recipe")
+                  if (requestedRecipe && recipeData[requestedRecipe]) openRecipe(requestedRecipe)
                 })
               })()
             </script>
